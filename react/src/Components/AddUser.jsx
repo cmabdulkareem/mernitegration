@@ -7,14 +7,30 @@ function AddUser() {
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [image, setImage] = useState([null])
 
-    function handleSubmit(e){
+    const formData = new FormData()
+        formData.append('name', name)
+        formData.append('email', email)
+        formData.append('password', password)
+
+        if(image){
+            formData.append('image', image)
+        }
+
+    function handleSubmit(e) {
         e.preventDefault()
-        axios.post('http://localhost:3000', {name, email, password})
-            .then((res)=>{
+        axios.post('http://localhost:3000', formData,
+            {
+                headers: {
+                    'Content-Type': "multipart/form-data"
+                }
+            }
+        )
+            .then((res) => {
                 toast.success(res.data.message)
             })
-            .catch((err)=>{
+            .catch((err) => {
                 toast.error(err.response.data.error)
             })
     }
@@ -49,6 +65,8 @@ function AddUser() {
                     onChange={(e)=>setPassword(e.target.value)}
                     value={password}
                 /><br />
+
+                <input type="file" name="image" id="" onChange={(e)=> setImage(e.target.files[0])}/>
                 <input type="submit" value="Register" />
             </form>
         </div>
