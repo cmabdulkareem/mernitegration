@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { ToastContainer, toast } from "react-toastify";
+import { Outlet, Link, NavLink } from 'react-router-dom';
 
 function AllUsers() {
     const [users, setUsers] = useState([])
@@ -22,7 +23,7 @@ function AllUsers() {
                 {users.length > 0 ?
                     (
                         users.map((u, index) =>
-                            <div className="card" style={{ width: "18rem" }}>
+                            <div className="card" key={index} style={{ width: "18rem" }}>
                                 <img src={`http://localhost:3000/${u.name}.jpg`} className="card-img-top" alt="..." />
                                 <div className="card-body">
                                     <h5 className="card-title">Name : {u.name}</h5>
@@ -31,7 +32,7 @@ function AllUsers() {
                                     <li className="list-group-item">Email : {u.email}</li>
                                 </ul>
                                 <div className="card-body">
-                                    <a href="#" className="card-link">View more</a>
+                                    <a href={`/edituser/${u._id}`} className="card-link" >Edit</a>
                                 </div>
                             </div>
                         )
@@ -39,6 +40,7 @@ function AllUsers() {
                     ("No user vailable")}
             </div>
         </div>
+        
     )
 }
 
