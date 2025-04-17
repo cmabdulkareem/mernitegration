@@ -5,12 +5,15 @@ import { useParams } from "react-router-dom";
 
 function EditUser() {
 
+  const [user, setUser] = useState({})
+
   let {id} = useParams()
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/user/:${id}`)
+    axios.get(`http://localhost:3000/user/${id}`)
         .then((res) => {
-            setUser(res.data.message);
+            setName(res.data.message.name);
+            setEmail(res.data.message.email);
         })
         .catch((err) => {
             toast.error(err.response.data.error);
@@ -20,39 +23,23 @@ function EditUser() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [image, setImage] = useState(null);
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    const formData = new FormData();
-
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("password", password);
-    if (image) {
-      formData.append("image", image);
-    }
-
     axios
-      .post("http://localhost:3000/signup", formData, {
-        //end-point provided is for backend route to handle form submission
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      .patch(`http://localhost:3000/user/update/${id}`, {name, email})
       .then((res) => {
-        setName("")
-        setEmail("")
-        setPassword("")
         toast.success(res.data.message);
+        alert("Updated")
       })
       .catch((err) => {
-        toast.error(err.response.data.error);
+        console.error(err);
+        
+        // toast.error(err.response.data.error);
       });
   }
 
+  
   return (
     <div className="container">
       <div className="row">
@@ -76,15 +63,6 @@ function EditUser() {
             value={email}
           />
           <br />
-          <label htmlFor="password">Password: </label> <br />
-          <input
-            type="password"
-            id="password"
-            placeholder="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          />
-          <br />
           <label htmlFor="image">Profile Image: </label> <br />
           <input
             type="file"
@@ -92,8 +70,11 @@ function EditUser() {
             id="image"
             onChange={(e) => setImage(e.target.files[0])}
           />
-          <input type="submit" className="btn btn-success" value="Register" />
+          <input type="submit" className="btn btn-success" value="Update" />
         </form>
+
+        <img src={`http://localhost:3000/${user.name}.jpg`} style={{width: "250px", height: "auto"}} alt="" />
+        
       </div>
     </div>
   );

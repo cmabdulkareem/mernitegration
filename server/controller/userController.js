@@ -32,3 +32,28 @@ export const getAllUsers = (req, res)=>{
         })
 }
 
+export const editUser = (req, res)=>{
+
+    const id = req.params.id
+    User.findById(id)
+        .then((users)=>{
+            res.status(200).json({message: users})
+        })
+        .catch((err)=>{
+            res.status(500).json({error: "Internal server error"})
+        })
+}
+
+export const updateUser = (req, res)=>{
+
+    const id = req.params.id
+    const {name, email} = req.body
+    User.findByIdAndUpdate(id, {name, email})
+        .then((user)=>{
+            res.status(200).json({message: user})
+        })
+        .catch((err)=>{
+            res.status(500).json({error: "Internal server error"})
+        })
+}
+
